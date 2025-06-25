@@ -1,5 +1,6 @@
 package com.ocmotta.accounts.mapper;
 
+import com.ocmotta.accounts.dto.AccountsDto;
 import com.ocmotta.accounts.dto.CustomerDto;
 import com.ocmotta.accounts.entity.Customer;
 
@@ -9,7 +10,17 @@ public class CustomerMapper {
         return new CustomerDto(
                 customer.getName(),
                 customer.getEmail(),
-                customer.getMobileNumber()
+                customer.getMobileNumber(),
+                null
+        );
+    }
+
+    public static CustomerDto mapToCustomerDto(Customer customer, AccountsDto accounts) {
+        return new CustomerDto(
+                customer.getName(),
+                customer.getEmail(),
+                customer.getMobileNumber(),
+                accounts
         );
     }
 

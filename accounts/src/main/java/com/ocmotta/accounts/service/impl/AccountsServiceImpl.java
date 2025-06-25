@@ -1,9 +1,12 @@
 package com.ocmotta.accounts.service.impl;
 
+import com.ocmotta.accounts.dto.AccountsDto;
 import com.ocmotta.accounts.dto.CustomerDto;
 import com.ocmotta.accounts.entity.Accounts;
 import com.ocmotta.accounts.entity.Customer;
 import com.ocmotta.accounts.exception.CustomerAlreadyExistsException;
+import com.ocmotta.accounts.exception.ResourceNotFoundException;
+import com.ocmotta.accounts.mapper.AccountsMapper;
 import com.ocmotta.accounts.mapper.CustomerMapper;
 import com.ocmotta.accounts.repository.AccountsRepository;
 import com.ocmotta.accounts.repository.CustomerRepository;
@@ -41,6 +44,23 @@ public class AccountsServiceImpl implements IAccountsService {
         customer.setCreatedBy("Anonymous");
         var savedCustomer = customerRepository.save(customer);
         accountsRepository.save(createNewAccount(savedCustomer));
+    }
+
+    /**
+     * Fetches the account details for a customer based on their mobile number.
+     *
+     * @param mobileNumber - The customer's mobile number
+     * @return CustomerDto containing the account details
+     */
+    @Override
+    public CustomerDto fetchAccount(String mobileNumber) {
+        final var customer = customerRepository.findByMobileNumber(mobileNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber));
+
+        final var account = accountsRepository.findByCustomerId(customer.getCustomerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString()));
+        final var accountsDto = AccountsMapper.mapToAccountsDto(account);
+        return CustomerMapper.mapToCustomerDto(customer, accountsDto);
     }
 
     /**
