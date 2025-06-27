@@ -55,12 +55,54 @@ public class AccountsServiceImpl implements IAccountsService {
     @Override
     public CustomerDto fetchAccount(String mobileNumber) {
         final var customer = customerRepository.findByMobileNumber(mobileNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Customer",
+                        "mobileNumber",
+                        mobileNumber
+                ));
 
         final var account = accountsRepository.findByCustomerId(customer.getCustomerId())
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Account",
+                        "customerId",
+                        customer.getCustomerId().toString()
+                ));
         final var accountsDto = AccountsMapper.mapToAccountsDto(account);
         return CustomerMapper.mapToCustomerDto(customer, accountsDto);
+    }
+
+    /**
+     * Updates the account details for a customer.
+     *
+     * @param customerDto - CustomerDto Object containing updated details
+     * @return boolean indicating success or failure of the update operation
+     */
+    @Override
+    public boolean updateAccount(CustomerDto customerDto) {
+        boolean isUpdated = false;
+        AccountsDto accountsDto = customerDto.accounts();
+        if (accountsDto != null) {
+            var accounts = accountsRepository.findById(accountsDto.accountNumber())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Account",
+                            "accountNumber",
+                            accountsDto.accountNumber().toString()
+                    ));
+            AccountsMapper.mapToAccounts(accountsDto, accounts);
+            accounts = accountsRepository.save(accounts);
+
+            var customerId = accounts.getCustomerId();
+            final var customer = customerRepository.findById(customerId)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Customer",
+                            "customerId",
+                            customerId.toString()
+                    ));
+            CustomerMapper.mapToCustomer(customerDto, customer);
+            customerRepository.save(customer);
+            isUpdated = true;
+        }
+        return isUpdated;
     }
 
     /**

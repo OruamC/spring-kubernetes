@@ -8,8 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.ocmotta.accounts.constants.AccountsConstants.MESSAGE_201;
-import static com.ocmotta.accounts.constants.AccountsConstants.STATUS_201;
+import static com.ocmotta.accounts.constants.AccountsConstants.*;
 
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -47,5 +46,25 @@ public class AccountsController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(customerDto);
+    }
+
+    /**
+     * Updates the account details for a customer.
+     *
+     * @param customerDto the updated customer details
+     * @return ResponseEntity with status 200 OK or 500 Internal Server Error
+     */
+    @PutMapping("/update")
+    public ResponseEntity<ResponseDto> updateAccountDetails(@RequestBody CustomerDto customerDto) {
+        boolean isUpdated = accountsService.updateAccount(customerDto);
+        if (isUpdated) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(STATUS_200, MESSAGE_200));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(STATUS_500, MESSAGE_500));
+        }
     }
 }
