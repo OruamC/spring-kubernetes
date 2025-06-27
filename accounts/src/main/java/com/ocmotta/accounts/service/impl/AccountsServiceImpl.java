@@ -40,8 +40,6 @@ public class AccountsServiceImpl implements IAccountsService {
     public void createAccount(CustomerDto customerDto) {
         var customer = CustomerMapper.mapToCustomer(customerDto, new Customer());
         checkRegisteredCustomerWithMobilePhone(customerDto);
-        customer.setCreatedAt(LocalDateTime.now());
-        customer.setCreatedBy("Anonymous");
         var savedCustomer = customerRepository.save(customer);
         accountsRepository.save(createNewAccount(savedCustomer));
     }
@@ -151,8 +149,6 @@ public class AccountsServiceImpl implements IAccountsService {
         newAccount.setAccountNumber(ramdomAccNumber);
         newAccount.setAccountType(SAVINGS);
         newAccount.setBranchAddress(ADDRESS);
-        newAccount.setCreatedAt(LocalDateTime.now());
-        newAccount.setCreatedBy("Anonymous");
         return newAccount;
     }
 }
