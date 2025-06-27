@@ -67,4 +67,24 @@ public class AccountsController {
                     .body(new ResponseDto(STATUS_500, MESSAGE_500));
         }
     }
+
+    /**
+     * Deletes the account for a customer based on their mobile number.
+     *
+     * @param mobileNumber the customer's mobile number
+     * @return ResponseEntity with status 200 OK or 500 Internal Server Error
+     */
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseDto> deleteAccount(@RequestParam(name = "mobileNumber") String mobileNumber) {
+        boolean isDeleted = accountsService.deleteAccount(mobileNumber);
+        if (isDeleted) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(STATUS_200, MESSAGE_200));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(STATUS_500, MESSAGE_500));
+        }
+    }
 }
