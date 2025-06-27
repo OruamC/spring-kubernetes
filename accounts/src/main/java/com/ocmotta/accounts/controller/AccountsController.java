@@ -3,15 +3,19 @@ package com.ocmotta.accounts.controller;
 import com.ocmotta.accounts.dto.CustomerDto;
 import com.ocmotta.accounts.dto.ResponseDto;
 import com.ocmotta.accounts.service.IAccountsService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static com.ocmotta.accounts.constants.AccountsConstants.*;
 
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
+@Validated
 public class AccountsController {
 
     private final IAccountsService accountsService;
@@ -27,7 +31,7 @@ public class AccountsController {
      * @return ResponseEntity with status 201 Created and a response message
      */
     @PostMapping("/create")
-    public ResponseEntity<ResponseDto> createAccount(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<ResponseDto> createAccount(@Valid @RequestBody CustomerDto customerDto) {
         accountsService.createAccount(customerDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -41,7 +45,10 @@ public class AccountsController {
      * @return ResponseEntity with the customer's account details
      */
     @GetMapping("/fetch")
-    public ResponseEntity<CustomerDto> fetchAccountDetails(@RequestParam(name = "mobileNumber") String mobileNumber) {
+    public ResponseEntity<CustomerDto> fetchAccountDetails(
+            @RequestParam(name = "mobileNumber")
+            @Pattern(regexp = "^$|[0-9]{9}", message = "Mobile number must be 9 digits")
+            String mobileNumber) {
         final var customerDto = accountsService.fetchAccount(mobileNumber);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -55,7 +62,7 @@ public class AccountsController {
      * @return ResponseEntity with status 200 OK or 500 Internal Server Error
      */
     @PutMapping("/update")
-    public ResponseEntity<ResponseDto> updateAccountDetails(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<ResponseDto> updateAccountDetails(@Valid @RequestBody CustomerDto customerDto) {
         boolean isUpdated = accountsService.updateAccount(customerDto);
         if (isUpdated) {
             return ResponseEntity
@@ -75,7 +82,10 @@ public class AccountsController {
      * @return ResponseEntity with status 200 OK or 500 Internal Server Error
      */
     @DeleteMapping("/delete")
-    public ResponseEntity<ResponseDto> deleteAccount(@RequestParam(name = "mobileNumber") String mobileNumber) {
+    public ResponseEntity<ResponseDto> deleteAccount(
+            @RequestParam(name = "mobileNumber")
+            @Pattern(regexp = "^$|[0-9]{9}", message = "Mobile number must be 9 digits")
+            String mobileNumber) {
         boolean isDeleted = accountsService.deleteAccount(mobileNumber);
         if (isDeleted) {
             return ResponseEntity
