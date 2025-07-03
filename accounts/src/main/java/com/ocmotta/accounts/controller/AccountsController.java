@@ -3,6 +3,7 @@ package com.ocmotta.accounts.controller;
 import com.ocmotta.accounts.dto.CustomerDto;
 import com.ocmotta.accounts.dto.ResponseDto;
 import com.ocmotta.accounts.service.IAccountsService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.ocmotta.accounts.constants.AccountsConstants.*;
 
+@Tag(
+        name = "CRUD REST APIs for Accounts",
+        description = "CRUD REST APIs for Accounts"
+)
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Validated

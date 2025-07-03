@@ -144,9 +144,9 @@ public class AccountsServiceImpl implements IAccountsService {
     private Accounts createNewAccount(Customer customer) {
         var newAccount = new Accounts();
         newAccount.setCustomerId(customer.getCustomerId());
-        long ramdomAccNumber = 100_000_000L + new Random().nextInt(900_000_000);
+        long randomAccNumber = 100_000_000L + new Random().nextInt(900_000_000);
 
-        newAccount.setAccountNumber(ramdomAccNumber);
+        newAccount.setAccountNumber(randomAccNumber);
         newAccount.setAccountType(SAVINGS);
         newAccount.setBranchAddress(ADDRESS);
         return newAccount;
