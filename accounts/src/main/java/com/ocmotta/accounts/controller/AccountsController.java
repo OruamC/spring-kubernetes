@@ -14,12 +14,12 @@ public class AccountsController implements AccountsAPI {
 
     private final IAccountsService accountsService;
 
-    public AccountsController(IAccountsService accountsService) {
+    public AccountsController(final IAccountsService accountsService) {
         this.accountsService = accountsService;
     }
 
     @Override
-    public ResponseEntity<ResponseDto> createAccount(CustomerDto customerDto) {
+    public ResponseEntity<ResponseDto> createAccount(final CustomerDto customerDto) {
         accountsService.createAccount(customerDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -27,7 +27,7 @@ public class AccountsController implements AccountsAPI {
     }
 
     @Override
-    public ResponseEntity<CustomerDto> fetchAccountDetails(String mobileNumber) {
+    public ResponseEntity<CustomerDto> fetchAccountDetails(final String mobileNumber) {
         final var customerDto = accountsService.fetchAccount(mobileNumber);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -35,7 +35,7 @@ public class AccountsController implements AccountsAPI {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> updateAccountDetails(CustomerDto customerDto) {
+    public ResponseEntity<ResponseDto> updateAccountDetails(final CustomerDto customerDto) {
         boolean isUpdated = accountsService.updateAccount(customerDto);
         if (isUpdated) {
             return ResponseEntity
@@ -43,22 +43,22 @@ public class AccountsController implements AccountsAPI {
                     .body(new ResponseDto(STATUS_200, MESSAGE_200));
         } else {
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDto(STATUS_500, MESSAGE_500));
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDto(STATUS_417, MESSAGE_417_UPDATE));
         }
     }
 
     @Override
-    public ResponseEntity<ResponseDto> deleteAccount(String mobileNumber) {
+    public ResponseEntity<ResponseDto> deleteAccount(final String mobileNumber) {
         boolean isDeleted = accountsService.deleteAccount(mobileNumber);
-        if (isDeleted) {
+        if(isDeleted) {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new ResponseDto(STATUS_200, MESSAGE_200));
-        } else {
+        }else{
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDto(STATUS_500, MESSAGE_500));
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDto(STATUS_417, MESSAGE_417_DELETE));
         }
     }
 }

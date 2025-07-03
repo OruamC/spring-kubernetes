@@ -49,7 +49,7 @@ public interface AccountsAPI {
     }
     )
     @PostMapping("/create")
-    ResponseEntity<ResponseDto> createAccount(@Valid @RequestBody CustomerDto customerDto);
+    ResponseEntity<ResponseDto> createAccount(@Valid @RequestBody final CustomerDto customerDto);
 
     /**
      * Fetches account details for a customer based on their mobile number.
@@ -79,7 +79,7 @@ public interface AccountsAPI {
     ResponseEntity<CustomerDto> fetchAccountDetails(
             @RequestParam(name = "mobileNumber")
             @Pattern(regexp = "^$|[0-9]{9}", message = "Mobile number must be 9 digits")
-            String mobileNumber);
+            final String mobileNumber);
 
     /**
      * Updates the account details for a customer.
@@ -110,7 +110,7 @@ public interface AccountsAPI {
     }
     )
     @PutMapping("/update")
-    ResponseEntity<ResponseDto> updateAccountDetails(@Valid @RequestBody CustomerDto customerDto);
+    ResponseEntity<ResponseDto> updateAccountDetails(@Valid @RequestBody final CustomerDto customerDto);
 
     /**
      * Deletes the account for a customer based on their mobile number.
@@ -144,5 +144,5 @@ public interface AccountsAPI {
     ResponseEntity<ResponseDto> deleteAccount(
             @RequestParam(name = "mobileNumber")
             @Pattern(regexp = "^$|[0-9]{9}", message = "Mobile number must be 9 digits")
-            String mobileNumber);
+            final String mobileNumber);
 }
